@@ -8,6 +8,8 @@ import java.io.OutputStream;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
 
 public class BaseApplication extends Application {
 
@@ -19,43 +21,62 @@ public class BaseApplication extends Application {
 		context = this;
 
 		try {
-			File file1 = new File(composeLocation("writableZHCN.dic"));
-			File file2 = new File(composeLocation("writableZHCN.dic-journal"));
-			if (!file1.exists()) {
-				copyBigDataToSD("writableZHCN.dic", file1.getName());
-			}
-			if (!file2.exists()) {
-				copyBigDataToSD("writableZHCN.dic-journal", file2.getName());
-			}
-
+			copyFile(context,"writableZHCN.dic",false);
+			copyFile(context,"writableZHCN.dic-journal",false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void copyBigDataToSD(String fileName, String strOutFileName) throws IOException {
-		InputStream myInput;
-		OutputStream myOutput = new FileOutputStream(strOutFileName);
-		myInput = this.getAssets().open(fileName);
-		byte[] buffer = new byte[1024];
-		int length = myInput.read(buffer);
-		while (length > 0) {
-			myOutput.write(buffer, 0, length);
-			length = myInput.read(buffer);
-		}
+	public static void copyFile(Context context, String fileName, boolean overwrite) {
+		if (fileName == null) return;
 
-		myOutput.flush();
-		myInput.close();
-		myOutput.close();
+		File f = context.getFilesDir();
+		if(!f.exists())
+			f.mkdir();
+		File file = new File(f,fileName);
+		if (file.exists() && !overwrite) return;
+
+		final String targetFileName =file.getPath();
+
+		Log.i("copyFile",targetFileName);
+
+		final AssetManager assetManager = context.getAssets();
+		try (InputStream in = assetManager.open(fileName);
+			 final FileOutputStream out = new FileOutputStream(targetFileName)) {
+			final byte[] buffer = new byte[1024];
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	public static Context getContext() {
 		return context;
 	}
 
 	public static String composeLocation(String fileName) {
-		String dataLocation = "/data/data/" + context.getPackageName() + "/";
-		return new StringBuilder().append(dataLocation).append(fileName).toString();
+		File f = context.getFilesDir();
+		if(!f.exists())
+			f.mkdir();
+		File file = new File(f,fileName);
+		Log.i("path",file.getAbsolutePath());
+		return file.getAbsolutePath();
+	}
+
+	public static String libPath(String fileName) {
+		File f = context.getFilesDir();
+		if(!f.exists())
+			f.mkdir();
+
+		File file = new File(f.getParent(),"lib"+File.separator+fileName);
+		Log.i("libpath",file.getAbsolutePath());
+		return file.getAbsolutePath();
 	}
 
 }

@@ -99,7 +99,7 @@ public class HandWritingBoardLayout extends AbsoluteLayout {
 	private void init() {
 
 		// why only set background then invalidate() valid
-		this.setBackgroundColor(android.R.color.holo_blue_bright);
+//		this.setBackgroundColor(android.R.color.holo_blue_bright);
 
 		{
 			mPath = new Path();

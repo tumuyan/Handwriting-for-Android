@@ -138,7 +138,7 @@ public class OpenWnnEngineZH implements WnnEngine {
 	 */
 	public OpenWnnEngineZH(String dicLib, String dicFilePath) {
 		/* load Chinese dictionary library */
-		mDictionaryZH = new OpenWnnDictionaryImpl(BaseApplication.composeLocation("lib/") + dicLib, dicFilePath);
+		mDictionaryZH = new OpenWnnDictionaryImpl(BaseApplication.libPath(dicLib) , dicFilePath);
 		if (!mDictionaryZH.isActive()) {
 			mDictionaryZH = new OpenWnnDictionaryImpl("/system/lib/" + dicLib, dicFilePath);
 		}

@@ -16,6 +16,9 @@
 
 package com.googlecode.openwnn.legacy;
 
+import static com.example.softwaretest.BaseApplication.context;
+import static com.example.softwaretest.BaseApplication.copyFile;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -415,6 +418,13 @@ public class OpenWnnZHCN extends OpenWnn {
 		mComposingText = new ComposingText();
 		mCandidatesViewManager = new TextCandidatesViewManager(-1);
 		mInputViewManager = new DefaultSoftKeyboardZH();
+		try {
+			copyFile(context,"writableZHCN.dic",false);
+			copyFile(context,"writableZHCN.dic-journal",false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		mConverter = mConverterZHCN = new OpenWnnEngineZHCN("libWnnZHCNDic.so", BaseApplication.composeLocation("writableZHCN.dic"));
 
 		mPreConverter = mPreConverterSymbols = new LetterConverterZH();
@@ -851,6 +861,7 @@ public class OpenWnnZHCN extends OpenWnn {
 	/** @see com.googlecode.openwnn.legacy.OpenWnn#onEvaluateInputViewShown */
 	@Override
 	public boolean onEvaluateInputViewShown() {
+		super.onEvaluateInputViewShown();
 		return true;
 	}
 
@@ -2238,7 +2249,7 @@ public class OpenWnnZHCN extends OpenWnn {
 	/**
 	 * Fits an editor info.
 	 * 
-	 * @param preferences
+	 * @param preference
 	 *            The preference data.
 	 * @param info
 	 *            The editor info.
@@ -2441,7 +2452,7 @@ public class OpenWnnZHCN extends OpenWnn {
 
 	/**
 	 * Handling KeyEvent(KEYUP) <br>
-	 * This method is called from {@link #onEvent()}.
+	 * This method is called from .
 	 * 
 	 * @param ev
 	 *            An up key event
@@ -2571,10 +2582,6 @@ public class OpenWnnZHCN extends OpenWnn {
 	 * 
 	 * @param converter
 	 *            {@link WnnEngine} which holds candidates.
-	 * @param dispFirst
-	 *            Whether it is the first time displaying the candidates
-	 * @param maxLine
-	 *            The maximum number of displaying lines
 	 */
 	synchronized private void displayCandidates(WnnEngine converter) {
 		if (mCandidateCallback != null) {

@@ -51,7 +51,6 @@ public class CandidateView extends View {
 	 * Construct a CandidateView for showing suggested words for completion.
 	 * 
 	 * @param context
-	 * @param attrs
 	 */
 	public CandidateView(Context context) {
 		super(context);

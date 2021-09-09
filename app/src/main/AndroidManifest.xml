@@ -4,30 +4,30 @@
     android:versionCode="100"
     android:versionName="10.0" >
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="20" />
-
     <application
-        android:name="com.example.softwaretest.BaseApplication"
-        android:allowBackup="true"
+        android:name=".BaseApplication"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.softwaretest.MainActivity"
-            android:label="自定义输入法" >
+            android:name=".MainActivity"
+            android:exported="true" >
+
+
+        </activity>
+
+        <activity android:name="com.example.softwaretest.InputViewActivity" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name="com.example.softwaretest.InputViewActivity" >
+
         </activity>
 
         <service
-            android:id="@+id/openwnn_chinese"
             android:name="com.googlecode.openwnn.legacy.OpenWnnZHCN"
+            android:exported="true"
             android:label="中"
             android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
