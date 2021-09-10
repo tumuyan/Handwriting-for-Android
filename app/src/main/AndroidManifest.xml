@@ -2,34 +2,53 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.softwaretest"
     android:versionCode="100"
-    android:versionName="10.0" >
+    android:versionName="10.0">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".BaseApplication"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" >
+        android:label="手写插件"
+        android:theme="@style/AppTheme">
+        <service
+            android:name=".HandwritingService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".HandwritingIntentService"
+            android:exported="true" />
 
+        <activity
+            android:name=".LoaderActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+            <!-- 无界面主题 用于悬浮窗调用 -->
 
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
 
-        <activity android:name="com.example.softwaretest.InputViewActivity" >
+            <!-- 默认Activity不工作，丢人 -->
+        </activity>
+        <activity android:name=".InputViewActivity">
 
+            <!-- 手写demo -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <service
             android:name="com.googlecode.openwnn.legacy.OpenWnnZHCN"
             android:exported="true"
             android:label="中"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>

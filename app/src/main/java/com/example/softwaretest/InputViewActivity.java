@@ -21,6 +21,8 @@ import com.googlecode.openwnn.legacy.CLOUDSONG.OnCandidateSelected;
 import com.googlecode.openwnn.legacy.CLOUDSONG.OnPinyinQueryed;
 import com.googlecode.openwnn.legacy.CLOUDSONG.PinyinQueryResult;
 import com.googlecode.openwnn.legacy.handwritingboard.HandWritingBoardLayout;
+import com.lzf.easyfloat.EasyFloat;
+import com.lzf.easyfloat.enums.ShowPattern;
 
 @SuppressLint("NewApi")
 public class InputViewActivity extends Activity implements OnCandidateSelected, OnHandWritingRecognize, OnPinyinQueryed, OnClickListener {
@@ -73,6 +75,7 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 //		ckManager.delAll();
 		PinYinInput.setText("");
 		mCandidateView.clear();
+
 	}
 
 	@Override

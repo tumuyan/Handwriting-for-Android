@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="300dp"
     android:background="#ffffff"
     android:gravity="bottom|center_horizontal"
     android:orientation="vertical">
@@ -10,34 +10,20 @@
     <RelativeLayout
         android:id="@+id/candidateContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#3F51B5">
 
 
-        <Button
-            android:id="@+id/btn_showMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
-            android:text="更多"
-            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/candidateselected"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="#009688"
         android:padding="16dp"
         android:textColor="#000000" />
 
-    <TextView
-        android:id="@+id/pinyinInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:padding="16dp"
-        android:textColor="#000000" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,7 +34,7 @@
             android:id="@+id/handwrtingboard"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#FFEB3B" />
+            android:background="#CDDC39" />
 
         <Button
             android:id="@+id/clean"
