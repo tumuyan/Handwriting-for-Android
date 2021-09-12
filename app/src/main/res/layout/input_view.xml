@@ -48,7 +48,7 @@
             android:id="@+id/handwrtingboard"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#FFEB3B" />
+            android:background="#FFC" />
 
         <Button
             android:id="@+id/clean"

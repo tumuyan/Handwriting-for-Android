@@ -4,15 +4,23 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.googlecode.openwnn.legacy.OnHandWritingRecognize;
 import com.googlecode.openwnn.legacy.WnnWord;
@@ -21,8 +29,6 @@ import com.googlecode.openwnn.legacy.CLOUDSONG.OnCandidateSelected;
 import com.googlecode.openwnn.legacy.CLOUDSONG.OnPinyinQueryed;
 import com.googlecode.openwnn.legacy.CLOUDSONG.PinyinQueryResult;
 import com.googlecode.openwnn.legacy.handwritingboard.HandWritingBoardLayout;
-import com.lzf.easyfloat.EasyFloat;
-import com.lzf.easyfloat.enums.ShowPattern;
 
 @SuppressLint("NewApi")
 public class InputViewActivity extends Activity implements OnCandidateSelected, OnHandWritingRecognize, OnPinyinQueryed, OnClickListener {
@@ -32,7 +38,8 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 
 	LinearLayout container;
 	RelativeLayout candidateContainer;
-	Button mShowMore;
+	Button btn_show, btn_hide;
+	EditText editText;
 	Button btnCleanHandWriting;
 	TextView PinYinInput;
 
@@ -44,7 +51,9 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.input_view);
+		setContentView(R.layout.input_view_activity);
+
+
 
 
 		container = (LinearLayout) findViewById(R.id.container);
@@ -76,7 +85,29 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 		PinYinInput.setText("");
 		mCandidateView.clear();
 
+
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if(!Settings.canDrawOverlays(getApplicationContext())) {
+				//启动Activity让用户授权
+				Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+				intent.setData(Uri.parse("package:" + getPackageName()));
+				startActivityForResult(intent,100);
+			}
+		}
+
+		editText = findViewById(R.id.edit_height);
+		btn_hide = findViewById(R.id.btn_hide);
+		btn_show = findViewById(R.id.btn_show);
+
+		btn_show.setOnClickListener(this);
+		btn_hide.setOnClickListener(this);
+
+
 	}
+
+
+
 
 	@Override
 	public void onClick(View view) {
@@ -85,7 +116,40 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 		case R.id.clean:
 			resetHandWritingRecognizeClicked();
 			break;
+
+			case R.id.btn_hide:
+				cmd(-1);
+				break;
+
+			case R.id.btn_show:
+				Editable s = editText.getText();
+				if(s==null)
+					cmd(-1);
+				else
+					cmd(Integer.parseInt(s.toString()));
+				break;
 		}
+	}
+
+	void cmd(int height){
+		Intent intent = new Intent();
+		intent.setComponent(new ComponentName("com.example.input", "com.example.softwaretest.HWService"));
+
+		if(height == -1){
+			stopService(intent);
+			return;
+		}else {
+			intent.putExtra("token","");
+			intent.putExtra("height",height);
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			startForegroundService(intent);
+		} else
+		{
+			startService(intent);
+		}
+//		Toast.makeText(this,"set to "+height,Toast.LENGTH_SHORT).show();
+
 	}
 
 
@@ -112,6 +176,31 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 			resetHandWritingRecognize();
 		} else {
 //			ckManager.candidateSelected(wnnWord);
+		}
+
+
+
+
+	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 100) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				if (Settings.canDrawOverlays(this)) {
+//					WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+//					WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+//					params.type = WindowManager.LayoutParams.TYPE_PHONE;
+//					params.format = PixelFormat.RGBA_8888;
+//					windowManager.addView(view,params);
+				} else {
+					Toast.makeText(this, "ACTION_MANAGE_OVERLAY_PERMISSION权限已被拒绝", Toast.LENGTH_SHORT).show();
+					;
+				}
+			}
+
 		}
 	}
 

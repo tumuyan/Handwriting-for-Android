@@ -6,28 +6,20 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="ACTION_MANAGE_OVERLAY_PERMISSION"/>
 
     <application
         android:name=".BaseApplication"
         android:icon="@drawable/ic_launcher"
         android:label="手写插件"
         android:theme="@style/AppTheme">
+
+
         <service
-            android:name=".HandwritingService"
+            android:name=".HWService"
             android:enabled="true"
-            android:exported="true"></service>
-        <service
-            android:name=".HandwritingIntentService"
             android:exported="true" />
 
-        <activity
-            android:name=".LoaderActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-
-            <!-- 无界面主题 用于悬浮窗调用 -->
-
-        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">

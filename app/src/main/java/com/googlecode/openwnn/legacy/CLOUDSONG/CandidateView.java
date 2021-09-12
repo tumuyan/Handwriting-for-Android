@@ -47,6 +47,18 @@ public class CandidateView extends View {
 
 	private OnCandidateSelected mOnCandidateSelected;
 
+	public void setmColorNormal(int mColorNormal) {
+		this.mColorNormal = mColorNormal;
+	}
+
+	public void setmColorRecommended(int mColorRecommended) {
+		this.mColorRecommended = mColorRecommended;
+	}
+
+	public void setmColorOther(int mColorOther) {
+		this.mColorOther = mColorOther;
+	}
+
 	/**
 	 * Construct a CandidateView for showing suggested words for completion.
 	 * 

@@ -335,6 +335,8 @@
     <string name="key_cn_symbol">符</string>
     <string name="key_jp_symbol">記号</string>
     <string name="key_alt">ALT</string>
+    <string name="channel_name">Handwriting Service</string>
+    <string name="channel_description">...</string>
 
 </resources>
 
