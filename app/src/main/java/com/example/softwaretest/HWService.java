@@ -90,6 +90,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             text_color = intent.getIntExtra("text_color",Color.BLACK);
             candidate_text_color = intent.getIntExtra("candidate_text_color",Color.DKGRAY);
 
+            Log.i("intent","height="+height+" back_color="+back_color+" text_color="+text_color + " candiate_text_color="+candidate_text_color);
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                     if(rsa.notSafe())
@@ -248,7 +249,11 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         iconFloatView.setBackgroundColor(back_color);
 
         mCandidateView.setmColorNormal(text_color);
-        mCandidateView.setBackgroundColor(back_color);
+//        Log.i("back_color b",Integer.toHexString(back_color) +(back_color> - 0x33000000 && back_color < 0x33000000) );
+        if (back_color>=0 && back_color < 0x44000000)
+            mCandidateView.setBackgroundColor(Color.GRAY);
+        else
+            mCandidateView.setBackgroundColor(back_color);
         mCandidateView.setmColorRecommended(candidate_text_color);
         mCandidateView.setmColorOther(candidate_text_color);
 //        mCandidateView.invalidate();

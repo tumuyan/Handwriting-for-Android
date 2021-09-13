@@ -10,11 +10,7 @@
     <RelativeLayout
         android:id="@+id/candidateContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:background="#3F51B5">
-
-
+        android:layout_height="wrap_content">
     </RelativeLayout>
 
     <TextView
