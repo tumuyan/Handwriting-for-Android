@@ -1,14 +1,10 @@
 /app/build/
 /.gradle/
 /build/android-profile/
-/.idea/*
 /build/
 /*.zip
-.idea/
 /.idea/
 /app/release/
 /.idea/libraries
-.idea/libraries/*
-.idea/libraries/
 /.idea/libraries/
 /app/build/

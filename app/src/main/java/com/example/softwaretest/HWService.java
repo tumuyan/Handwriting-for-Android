@@ -74,6 +74,10 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         mWindowManager = (WindowManager) (getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
         iconFloatView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.input_view_windows, null);
         Log.d(TAG, "onCreate: ");
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            createNotificationChannel(null);
+        }
     }
 
     @Override
@@ -86,6 +90,11 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             text_color = intent.getIntExtra("text_color",Color.BLACK);
             candidate_text_color = intent.getIntExtra("candidate_text_color",Color.DKGRAY);
 
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                    if(rsa.notSafe())
+                    createNotificationChannel("Not safe! Start Service without RSA Key.");
+                }
 
             if (height >= 0) {
 
@@ -131,9 +140,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
 
     private synchronized void addView() {
         if (!isAddView) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                createNotificationChannel();
-            }
+
 
 
             iconFloatView.clearAnimation();
@@ -179,7 +186,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
     }
 
 
-    private void createNotificationChannel() {
+    private void createNotificationChannel(String content) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // 通知渠道的id
         String id = "my_channel_01";
@@ -187,7 +194,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         CharSequence name = getString(R.string.channel_name);
 //         用户可以看到的通知渠道的描述
         String description = getString(R.string.channel_description);
-        int importance = NotificationManager.IMPORTANCE_HIGH;
+        int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel mChannel = new NotificationChannel(id, name, importance);
 //         配置通知渠道的属性
         mChannel.setDescription(description);
@@ -203,7 +210,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         String CHANNEL_ID = "my_channel_01";
         // Create a notification and set the notification channel.
         Notification notification = new Notification.Builder(this)
-                .setContentTitle("rime handwriting").setContentText("You've received new messages.")
+                .setContentTitle(name).setContentText(content==null?description:content)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setChannelId(CHANNEL_ID)
                 .build();
@@ -236,8 +243,6 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             iconFloatView.findViewById(R.id.clean).setOnClickListener(this);
             iconFloatView.findViewById(R.id.exit).setOnClickListener(this);
             iconFloatView.findViewById(R.id.delete).setOnClickListener(this);
-
-
 
         }
         iconFloatView.setBackgroundColor(back_color);
@@ -297,8 +302,8 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         Intent intent = new Intent();
         try {
             intent.setAction("com.osfans.trime.commit");
-            intent.putExtra("text", rsa.privateEncode(text));
-            intent.putExtra("ext_app", getOpPackageName());
+            intent.putExtra("text", rsa.encode(text));
+            intent.putExtra("ext_app", getPackageName());
             sendBroadcast(intent);
         } catch (Exception e) {
             e.printStackTrace();

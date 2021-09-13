@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="ACTION_MANAGE_OVERLAY_PERMISSION"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".BaseApplication"
@@ -50,10 +51,6 @@
                 android:resource="@xml/method_zhcn" />
         </service>
 
-        <activity android:name="com.googlecode.openwnn.legacy.ZH.CN.UserDictionaryToolsListZHCN" />
-        <activity
-            android:name="com.googlecode.openwnn.legacy.ZH.CN.UserDictionaryToolsEditZHCN"
-            android:label="中文字典" />
     </application>
 
 </manifest>

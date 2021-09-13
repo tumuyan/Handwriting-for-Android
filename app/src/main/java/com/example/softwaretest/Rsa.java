@@ -1,7 +1,6 @@
 package com.example.softwaretest;
 
 import android.util.Base64;
-
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -12,41 +11,44 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
 import javax.crypto.Cipher;
 
 public class Rsa {
     static final String RSA = "RSA";
 
-    private KeyPair keyPair;
-    private KeyFactory keyFactory;
-
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+    private int mode;
+
     public Rsa() {
         this(null);
+        mode = 3;
     }
 
     public Rsa(Object key) {
 
         try {
-            keyFactory = KeyFactory.getInstance(RSA);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
 
             if (key instanceof PublicKey) {
                 publicKey = (PublicKey) key;
+                mode = 1;
             } else if (key instanceof PrivateKey) {
                 privateKey = (PrivateKey) key;
+                mode = 2;
             } else {
-                keyPair = generateSenderPublicKey();
+                KeyPair keyPair = generateSenderPublicKey();
                 RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
                 RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-                PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(rsaPrivateKey.getEncoded());
+                PKCS8EncodedKeySpec pkcs8EncodedKeySpec =
+                        new PKCS8EncodedKeySpec(rsaPrivateKey.getEncoded());
                 privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
 
                 X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(rsaPublicKey.getEncoded());
                 publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
+                mode = 0;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,8 +63,31 @@ public class Rsa {
         return publicKey;
     }
 
+    public boolean notSafe() {
+        return mode < 1;
+    }
+
+    // 加密，输出base64编码的字符串
+    public String encode(String str) {
+        if (mode == 0) return str;
+        try {
+            Cipher cipher = Cipher.getInstance(RSA);
+            if (mode == 1) cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            if (mode == 2) cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            else cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] result = cipher.doFinal(str.getBytes());
+            String base64 = Base64.encodeToString(result, Base64.DEFAULT);
+            //      Timber.d("加密：%s", base64);
+            return base64;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     // 私钥加密，输出base64编码的字符串
     public String privateEncode(String str) {
+        if (mode == 0) return str;
         try {
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
@@ -79,6 +104,7 @@ public class Rsa {
     // 公钥加密，输出base64编码的字符串
     public String publicEncode(String str) {
         try {
+            if (mode == 0) return str;
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] result = cipher.doFinal(str.getBytes());
@@ -125,7 +151,6 @@ public class Rsa {
      * 构建密钥对
      *
      * @return 构建完的公钥私钥
-     * @throws NoSuchAlgorithmException
      */
     private static KeyPair generateSenderPublicKey() throws NoSuchAlgorithmException {
         KeyPairGenerator senderKeyPairGenerator = KeyPairGenerator.getInstance(RSA);

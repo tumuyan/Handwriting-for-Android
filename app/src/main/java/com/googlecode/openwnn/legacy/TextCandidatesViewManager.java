@@ -480,7 +480,7 @@ public class TextCandidatesViewManager implements CandidatesViewManager, Gesture
 		displayCandidates(converter, true, getMaxLine());
 	}
 
-	/** @see CandidatesViewManager#getMaxLine */
+	/** @see CandidatesViewManager */
 	private int getMaxLine() {
 		int maxLine = (mPortrait) ? LINE_NUM_PORTRAIT : LINE_NUM_LANDSCAPE;
 		return maxLine;
