@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,22 +11,18 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.googlecode.openwnn.legacy.CLOUDSONG.CandidateView;
 import com.googlecode.openwnn.legacy.CLOUDSONG.OnCandidateSelected;
@@ -36,8 +31,6 @@ import com.googlecode.openwnn.legacy.WnnWord;
 import com.googlecode.openwnn.legacy.handwritingboard.HandWritingBoardLayout;
 
 
-import java.security.PrivateKey;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 
 
@@ -62,11 +55,14 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
     private StringBuilder currentInput = new StringBuilder();
 
     private Rsa rsa;
+    private boolean notsafe;
 
-    private int height = 0;
+    private int height = 0, candidate_view_height;
 
     private boolean inited = false;
-    private int back_color,text_color,candidate_text_color;
+    private int back_color, text_color, candidate_text_color;
+
+    RelativeLayout.LayoutParams candidateViewLp;
 
     @Override
     public void onCreate() {
@@ -75,7 +71,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         iconFloatView = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.input_view_windows, null);
         Log.d(TAG, "onCreate: ");
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(null);
         }
     }
@@ -86,17 +82,24 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         if (intent != null) {
             rsa = new Rsa(intent.getSerializableExtra("key"));
             height = intent.getIntExtra("height", -1);
-            back_color = intent.getIntExtra("back_color",Color.GRAY);
-            text_color = intent.getIntExtra("text_color",Color.BLACK);
-            candidate_text_color = intent.getIntExtra("candidate_text_color",Color.DKGRAY);
+            back_color = intent.getIntExtra("back_color", Color.GRAY);
+            text_color = intent.getIntExtra("text_color", Color.BLACK);
+            candidate_text_color = intent.getIntExtra("candidate_text_color", Color.DKGRAY);
+            candidate_view_height = intent.getIntExtra("candidate_view_height", -1);
 
-
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                    if(rsa.notSafe())
-                    createNotificationChannel("Not safe! Start Service without RSA Key.");
-                }
+            Log.i("intent", "height=" + height + " back_color=" + back_color + " text_color=" + text_color + " candiate_text_color=" + candidate_text_color);
 
             if (height >= 0) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (rsa.notSafe() != notsafe) {
+                        notsafe = rsa.notSafe();
+                        if (notsafe)
+                            createNotificationChannel("Not safe! Start Service without RSA Key.");
+                        else
+                            createNotificationChannel(null);
+                    }
+                }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (!Settings.canDrawOverlays(getApplicationContext())) {
@@ -111,7 +114,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
                     }
                 }
 
-                Toast.makeText(this, "update " + height, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "update " + height, Toast.LENGTH_SHORT).show();
                 addView();
 
                 mLayoutParams = (WindowManager.LayoutParams) iconFloatView.getLayoutParams();
@@ -140,7 +143,6 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
 
     private synchronized void addView() {
         if (!isAddView) {
-
 
 
             iconFloatView.clearAnimation();
@@ -210,7 +212,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         String CHANNEL_ID = "my_channel_01";
         // Create a notification and set the notification channel.
         Notification notification = new Notification.Builder(this)
-                .setContentTitle(name).setContentText(content==null?description:content)
+                .setContentTitle(name).setContentText(content == null ? description : content)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setChannelId(CHANNEL_ID)
                 .build();
@@ -228,11 +230,11 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
 
             mCandidateView = new CandidateView(getApplicationContext());
 
-            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp1.addRule(RelativeLayout.LEFT_OF, R.id.btn_showMore);
-
-            lp1.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            candidateContainer.addView(mCandidateView, lp1);
+            candidateViewLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            candidateViewLp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            if(candidate_view_height>0)
+            candidateViewLp.height = candidate_view_height;
+            candidateContainer.addView(mCandidateView, candidateViewLp);
             System.currentTimeMillis();
 
             mCandidateView.clear();
@@ -244,14 +246,41 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             iconFloatView.findViewById(R.id.exit).setOnClickListener(this);
             iconFloatView.findViewById(R.id.delete).setOnClickListener(this);
 
+        }else{
+            if(candidate_view_height>0)
+                candidateViewLp.height = candidate_view_height;
         }
         iconFloatView.setBackgroundColor(back_color);
 
         mCandidateView.setmColorNormal(text_color);
-        mCandidateView.setBackgroundColor(back_color);
+//        Log.i("back_color b",Integer.toHexString(back_color) +(back_color> - 0x33000000 && back_color < 0x33000000) );
+        if (back_color >= 0 && back_color < 0x44000000)
+            mCandidateView.setBackgroundColor(calBackColor(text_color));
+        else
+            mCandidateView.setBackgroundColor(back_color);
         mCandidateView.setmColorRecommended(candidate_text_color);
         mCandidateView.setmColorOther(candidate_text_color);
 //        mCandidateView.invalidate();
+/*
+        int h = mCandidateView.getHeight();
+        Log.i("candidate", "height=" + h + " candidate_view_height="+candidate_view_height);
+        if (candidate_view_height > 0) {
+            int clear_height = h - mCandidateView.getPaddingBottom() - mCandidateView.getPaddingTop();
+            int padding = (candidate_view_height - clear_height) / 2;
+            if (padding >= 0)
+                mCandidateView.setPadding(mCandidateView.getPaddingLeft(), padding, mCandidateView.getPaddingRight(), padding);
+            Log.i("candidate", "height2=" + mCandidateView.getHeight() +" padding="+padding);
+
+        }*/
+    }
+
+
+    private int calBackColor(int color) {
+        Color f = Color.valueOf(color);
+        Log.i("calBackColor", Integer.toHexString(color) + " " + f.luminance());
+        if (f.luminance() < 0.3)
+            return Color.LTGRAY;
+        return Color.DKGRAY;
     }
 
 

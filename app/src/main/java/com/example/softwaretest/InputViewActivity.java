@@ -82,7 +82,9 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 
 		handWritingBoard.setVisibility(View.VISIBLE);
 //		ckManager.delAll();
-		PinYinInput.setText("");
+		PinYinInput.setText("这是Rime输入法的手写插件测试页面。你可以直接在下方区域测试手写识别。" +
+				"\n在文本框内输入数值并点击“显示悬浮窗”按钮，可以调用HWService并打开悬浮窗，悬浮窗高度为设定的数值。" +
+				"\n正常使用时，需要给本插件自启动权限、悬浮窗权限。");
 		mCandidateView.clear();
 
 
