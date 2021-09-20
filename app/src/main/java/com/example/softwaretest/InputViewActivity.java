@@ -65,8 +65,6 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 		PinYinInput = (TextView) findViewById(R.id.pinyinInput);
 		inputShow = (TextView) findViewById(R.id.candidateselected);
 
-//		ckManager = new CloudKeyboardInputManager();
-//		ckManager.setOnPinyinQueryed(this);
 		mCandidateView = new CandidateView(this);
 		mCandidateView.setOnCandidateSelected(this);
 		RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -179,10 +177,6 @@ public class InputViewActivity extends Activity implements OnCandidateSelected, 
 		} else {
 //			ckManager.candidateSelected(wnnWord);
 		}
-
-
-
-
 	}
 
 
