@@ -60,7 +60,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
     private int height = 0, candidate_view_height;
 
     private boolean inited = false;
-    private int back_color, text_color, candidate_text_color;
+    private int back_color, text_color, candidate_text_color,layout_y;
 
     RelativeLayout.LayoutParams candidateViewLp;
 
@@ -86,6 +86,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             text_color = intent.getIntExtra("text_color", Color.BLACK);
             candidate_text_color = intent.getIntExtra("candidate_text_color", Color.DKGRAY);
             candidate_view_height = intent.getIntExtra("candidate_view_height", -1);
+            layout_y = intent.getIntExtra("layout_y",0);
 
             Log.i("intent", "height=" + height + " back_color=" + back_color + " text_color=" + text_color + " candiate_text_color=" + candidate_text_color);
 
@@ -184,7 +185,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
                 | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mLayoutParams.format = PixelFormat.TRANSLUCENT;
         mLayoutParams.height = height;
-        mLayoutParams.y = 0;
+        mLayoutParams.y = layout_y;
     }
 
 
