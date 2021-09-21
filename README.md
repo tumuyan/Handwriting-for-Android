@@ -1,9 +1,5 @@
-# SoftWareTest
-Demo contains three kinds of Chinese, English, Japanese, in the database, there are corresponding to the type of so database package. The place to note is that the manifest.xml in the registration of OpenWnnZHCN services, the statement of the label in the text,So this is the default option for the input method in your device settings, which will be changed to the "middle" option!
-
-Demo中包含中文，英文，日文三类，在资源库中有对应的三类so数据库包。需要注意的地方是manifest.xml中关于OpenWnnZHCN服务的注册中，声明了label为“中”文，
-所以这时候你设备的系统设置中输入法的默认选项会变为“中”的选项，所以这个标签是否有需要，根据你自己的需要而定！
-
-支持手写和拼音检索！
+# Handwriting for Trime
+为Android平台的rime输入法TRIME（同文输入法）设计的手写输入插件。 需要给予悬浮窗权限、自启动权限。  
+也可以作为一个简易的独立的手写输入法（没有设计引导，需要手动在系统的语言与输入法-输入法管理中启用“手写”，并切换到手写方案）
 
 
