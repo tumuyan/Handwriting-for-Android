@@ -60,7 +60,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
     private int height = 0, candidate_view_height;
 
     private boolean inited = false;
-    private int back_color, text_color, candidate_text_color,layout_y;
+    private int hand_writing_color, back_color, text_color, candidate_text_color,layout_y;
 
     RelativeLayout.LayoutParams candidateViewLp;
 
@@ -82,6 +82,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         if (intent != null) {
             rsa = new Rsa(intent.getSerializableExtra("key"));
             height = intent.getIntExtra("height", -1);
+            hand_writing_color = intent.getIntExtra("hand_writing_color", Color.RED);
             back_color = intent.getIntExtra("back_color", Color.GRAY);
             text_color = intent.getIntExtra("text_color", Color.BLACK);
             candidate_text_color = intent.getIntExtra("candidate_text_color", Color.DKGRAY);
@@ -120,6 +121,9 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
 
                 mLayoutParams = (WindowManager.LayoutParams) iconFloatView.getLayoutParams();
                 mLayoutParams.height = height;
+
+                Log.i("hand_writing_color",Integer.toHexString(hand_writing_color));
+                handWritingBoard.setPaintColor(hand_writing_color);
 
             } else {
                 removeView();
@@ -226,11 +230,11 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
             inited = true;
             container = iconFloatView.findViewById(R.id.container);
             candidateContainer = iconFloatView.findViewById(R.id.candidateContainer);
-            handWritingBoard = iconFloatView.findViewById(R.id.handwrtingboard);
             inputShow = iconFloatView.findViewById(R.id.candidateselected);
 
-            mCandidateView = new CandidateView(getApplicationContext());
+            handWritingBoard = iconFloatView.findViewById(R.id.handwrtingboard);
 
+            mCandidateView = new CandidateView(getApplicationContext());
             candidateViewLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             candidateViewLp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             if(candidate_view_height>0)
@@ -293,6 +297,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
                 resetHandWritingRecognizeClicked();
                 break;
             case R.id.exit:
+                resetHandWritingRecognizeClicked();
                 removeView();
                 break;
             case R.id.delete:

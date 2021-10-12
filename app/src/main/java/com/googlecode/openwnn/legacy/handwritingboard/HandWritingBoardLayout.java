@@ -18,11 +18,14 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AbsoluteLayout;
+
+import androidx.annotation.ColorInt;
 
 import com.googlecode.openwnn.legacy.OnHandWritingRecognize;
 import com.googlecode.openwnn.legacy.WnnWord;
@@ -117,6 +120,10 @@ public class HandWritingBoardLayout extends AbsoluteLayout {
 		mPaintText.setColor(0xFFFF0000);
 		mPaintText.setTextSize(mFontSize);
 		mPaintText.setTextAlign(Paint.Align.LEFT);
+	}
+
+	public void setPaintColor(@ColorInt int color) {
+		mPaint.setColor(color);
 	}
 
 	@Override
