@@ -139,7 +139,6 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
         Log.d(TAG, "onDestroy: ");
         removeView();
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -163,6 +162,7 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
 
     private synchronized void removeView() {
         if (isAddView) {
+            resetHandWritingRecognizeClicked();
             mWindowManager.removeView(iconFloatView);
             isAddView = false;
         }
@@ -297,7 +297,6 @@ public final class HWService extends Service implements OnCandidateSelected, OnH
                 resetHandWritingRecognizeClicked();
                 break;
             case R.id.exit:
-                resetHandWritingRecognizeClicked();
                 removeView();
                 break;
             case R.id.delete:
