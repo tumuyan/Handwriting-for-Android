@@ -27,7 +27,8 @@
 
             <!-- 默认Activity不工作，丢人 -->
         </activity>
-        <activity android:name=".InputViewActivity">
+        <activity android:name=".InputViewActivity"
+            android:exported="true">
 
             <!-- 手写demo -->
             <intent-filter>

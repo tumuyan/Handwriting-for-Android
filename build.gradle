@@ -7,8 +7,12 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
+        classpath 'com.android.tools.build:gradle:7.4.2'
     }
+}
+
+ext {
+    appcompatVersion = '1.6.1'
 }
 
 allprojects {
